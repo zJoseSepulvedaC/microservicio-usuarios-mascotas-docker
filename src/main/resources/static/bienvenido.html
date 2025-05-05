@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Bienvenido</title>
+</head>
+<body>
+    <h2>Página de bienvenida</h2>
+    <div id="mensaje"></div>
+
+    <script>
+        const nombre = localStorage.getItem("nombre");
+        const rol = localStorage.getItem("rol");
+
+        if (nombre && rol) {
+            document.getElementById("mensaje").innerHTML = `<p>Bienvenido, <strong>${nombre}</strong> (${rol})</p>`;
+        } else {
+            document.getElementById("mensaje").innerHTML = `<p>No has iniciado sesión correctamente.</p>`;
+        }
+
+        // Limpia el localStorage para evitar mantener datos al recargar
+        localStorage.clear();
+    </script>
+</body>
+</html>

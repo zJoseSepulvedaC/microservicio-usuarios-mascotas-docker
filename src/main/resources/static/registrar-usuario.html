@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Usuario</title>
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .registro-container {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            margin-top: 0;
+            text-align: center;
+            color: #333;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #resultado {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="registro-container">
+        <h2>Registrar Usuario</h2>
+        <form id="formUsuario">
+            <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" required>
+            <input type="email" id="email" name="email" placeholder="Correo electrónico" required>
+            <input type="password" id="contraseña" name="contraseña" placeholder="Contraseña" required>
+
+            <select id="rol" name="rol" required>
+                <option value="">-- Selecciona un rol --</option>
+                <option value="dueño de mascota">Dueño de mascota</option>
+                <option value="conductor pet-friendly">Conductor de transporte pet-friendly</option>
+            </select>
+
+            <button type="submit">Registrar</button>
+        </form>
+
+        <div id="resultado"></div>
+        <div style="text-align: center; margin-top: 10px;">
+            <button onclick="location.href='login.html'" style="background-color: #2196F3;">Volver al login</button>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById("formUsuario");
+        const resultado = document.getElementById("resultado");
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const nombre = document.getElementById("nombre").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const contraseña = document.getElementById("contraseña").value.trim();
+            const rol = document.getElementById("rol").value.trim();
+
+            const regexNombre = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]{3,}$/;
+            const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!nombre || !email || !contraseña || !rol) {
+                resultado.innerHTML = `<p style="color:red;">Completa todos los campos</p>`;
+                return;
+            }
+
+            if (!regexNombre.test(nombre)) {
+                resultado.innerHTML = `<p style="color:red;">Nombre inválido. Solo letras y mínimo 3 caracteres.</p>`;
+                return;
+            }
+
+            if (!regexEmail.test(email)) {
+                resultado.innerHTML = `<p style="color:red;">Correo electrónico inválido.</p>`;
+                return;
+            }
+
+            fetch("http://localhost:8080/usuarios/registrar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ nombre, email, contraseña, rol })
+        })
+
+
+            .then(res => res.text())
+            .then(data => {
+                resultado.innerHTML = `<p style="color:green;">${data}</p>`;
+                form.reset();
+            })
+            .catch(() => {
+                resultado.innerHTML = `<p style="color:red;">Error al conectar con el servidor</p>`;
+            });
+        });
+    </script>
+</body>
+</html>

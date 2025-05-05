@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Viajes con Mascotas</title>
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            margin-top: 0;
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #444;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #resultado {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>Iniciar sesión</h2>
+        <form id="loginForm">
+            <label>Email:</label>
+            <input type="email" id="email" required>
+
+            <label>Contraseña:</label>
+            <input type="password" id="contraseña" required>
+
+            <button type="submit">Entrar</button>
+        </form>
+
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById("loginForm");
+        const resultado = document.getElementById("resultado");
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const contraseña = document.getElementById("contraseña").value;
+
+            fetch(`http://localhost:8080/usuarios/login?email=${email}&contraseña=${contraseña}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.email) {
+                        localStorage.setItem("nombre", data.nombre);
+                        localStorage.setItem("rol", data.rol);
+                        window.location.href = "/bienvenido.html";
+                    } else {
+                        resultado.innerHTML = `<p style="color:red;">Credenciales incorrectas</p>`;
+                    }
+                })
+                .catch(err => {
+                    resultado.innerHTML = `<p style="color:red;">Error al conectar con el servidor</p>`;
+                });
+        });
+    </script>
+
+    <!-- justo debajo de <div id="resultado"></div> -->
+        <div style="text-align: center; margin-top: 20px;">
+            <button onclick="location.href='registrar-usuario.html'" style="background-color: #2196F3;">Registrarse</button>
+        </div>
+
+
+</body>
+</html>
